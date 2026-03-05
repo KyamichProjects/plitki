@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>МОЩЕНИЕ — Бетонная тротуарная плитка премиум-класса</title>
+<meta name="description" content="Бетонная тротуарная плитка премиум-класса для дорожек и площадок. Уникальная клиновая плитка для радиусных дорожек. Онлайн-конструктор. Доставка по России.">
+<meta name="keywords" content="тротуарная плитка, бетонная плитка, клиновая плитка, радиусная дорожка, мощение, плитка для дорожек, купить плитку">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="МОЩЕНИЕ — Бетонная плитка премиум-класса">
+<meta property="og:description" content="Уникальная клиновая плитка для дорожек любой формы. Онлайн-конструктор дорожки.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<link rel="canonical" href="/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Raleway:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;cursor:none!important}
+:root{
+  --bg:#0c0b07;--bg2:#13120e;--bg3:#1a1714;--bg4:#222018;
+  --cb:#2a2820;--cb2:#3a3830;
+  --text:#f0ece4;--text2:#c8c0b0;--text3:#807868;
+  --gold:#c4933a;--gold2:#e0aa50;
+  --serif:'Playfair Display',serif;
+  --sans:'Raleway',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;overflow-x:hidden}
+
+/* ── CURSOR ── */
+.cur{position:fixed;pointer-events:none;z-index:9999;top:0;left:0;will-change:transform}
+.cur-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;margin:-3px 0 0 -3px}
+.cur-ring{width:28px;height:28px;border:1.5px solid var(--gold);border-radius:50%;margin:-14px 0 0 -14px;opacity:.6;transition:width .18s,height .18s,opacity .18s,margin .18s}
+.cur-ring.big{width:46px;height:46px;margin:-23px 0 0 -23px;opacity:.35}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5vw;height:68px;display:flex;align-items:center;transition:background .3s,box-shadow .3s}
+nav.scrolled{background:rgba(12,11,7,.92);backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--cb)}
+.nav-logo{font-family:var(--serif);font-size:22px;font-weight:900;color:var(--gold);letter-spacing:4px;text-decoration:none}
+.nav-links{margin-left:auto;display:flex;gap:32px;align-items:center}
+.nav-links a{color:var(--text3);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{background:var(--gold)!important;color:#000!important;padding:10px 22px;border-radius:2px;font-size:11px!important;transition:background .2s!important}
+.nav-cta:hover{background:var(--gold2)!important}
+.nav-ham{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:8px;margin-left:auto}
+.nav-ham span{display:block;width:24px;height:1.5px;background:var(--text);transition:all .25s}
+.nav-ham.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.nav-ham.open span:nth-child(2){opacity:0}
+.nav-ham.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.nav-mob{position:fixed;inset:0;background:rgba(12,11,7,.97);z-index:99;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.nav-mob.open{transform:none}
+.nav-mob a{font-size:22px;font-weight:700;color:var(--text2);text-decoration:none;letter-spacing:2px}
+.nav-mob .nav-cta{font-size:16px!important;padding:14px 36px;background:var(--gold);color:#000;border-radius:2px}
+
+/* ── SECTIONS ── */
+section{padding:100px 5vw}
+.sec-label{font-size:9px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.sec-title{font-family:var(--serif);font-size:clamp(32px,4vw,52px);font-weight:700;line-height:1.2;margin-bottom:20px}
+.sec-sub{color:var(--text2);font-size:16px;line-height:1.7;max-width:560px}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 5vw 80px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 60% 40%,rgba(196,147,58,.07) 0%,transparent 70%)}
+.hero-label{font-size:9px;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.hero-title{font-family:var(--serif);font-size:clamp(40px,6vw,88px);font-weight:900;line-height:1.05;max-width:780px;margin-bottom:28px}
+.hero-title span{color:var(--gold)}
+.hero-sub{color:var(--text2);font-size:18px;line-height:1.7;max-width:520px;margin-bottom:48px}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#000;font-size:12px;font-weight:800;letter-spacing:2px;padding:16px 32px;border-radius:2px;text-decoration:none;transition:background .2s,transform .15s}
+.btn-primary:hover{background:var(--gold2);transform:translateY(-1px)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid var(--cb2);color:var(--text2);font-size:12px;font-weight:700;letter-spacing:1.5px;padding:16px 32px;border-radius:2px;text-decoration:none;transition:all .2s}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.hero-stats{margin-top:64px;display:flex;gap:48px;flex-wrap:wrap}
+.hero-stat{}
+.hero-stat-n{font-family:var(--serif);font-size:36px;font-weight:900;color:var(--gold)}
+.hero-stat-l{font-size:11px;color:var(--text3);letter-spacing:1px;margin-top:2px}
+
+/* ── CATALOG ── */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2px;margin-top:56px}
+.cat-card{background:var(--bg2);padding:32px;transition:background .2s;position:relative;overflow:hidden}
+.cat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .3s}
+.cat-card:hover::after{transform:scaleX(1)}
+.cat-card:hover{background:var(--bg3)}
+.cat-img{width:100%;aspect-ratio:4/3;background:var(--bg3);border-radius:1px;margin-bottom:20px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.cat-img canvas{display:block}
+.cat-name{font-family:var(--serif);font-size:20px;font-weight:700;margin-bottom:6px}
+.cat-dims{font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:12px}
+.cat-desc{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px}
+.cat-price{font-size:22px;font-weight:800;color:var(--gold)}
+.cat-price span{font-size:12px;color:var(--text3);font-weight:400}
+.cat-link{display:inline-flex;align-items:center;gap:6px;color:var(--gold);font-size:11px;font-weight:700;letter-spacing:1.5px;text-decoration:none;margin-top:16px;transition:gap .2s}
+.cat-link:hover{gap:10px}
+
+/* ── HOW IT WORKS ── */
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:56px}
+.how-card{background:var(--bg2);padding:36px 32px}
+.how-n{font-family:var(--serif);font-size:56px;font-weight:900;color:var(--cb2);line-height:1;margin-bottom:20px}
+.how-title{font-size:16px;font-weight:700;margin-bottom:10px}
+.how-text{font-size:13px;color:var(--text2);line-height:1.7}
+
+/* ── ABOUT ── */
+.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.about-list{margin-top:32px;display:flex;flex-direction:column;gap:16px}
+.about-item{display:flex;gap:16px;padding:18px;border:1px solid var(--cb);transition:border-color .2s}
+.about-item:hover{border-color:var(--gold)}
+.about-icon{font-size:22px;flex-shrink:0;margin-top:2px}
+.about-item-title{font-size:14px;font-weight:700;margin-bottom:4px}
+.about-item-text{font-size:12px;color:var(--text2);line-height:1.6}
+.about-visual{aspect-ratio:1;background:var(--bg2);border:1px solid var(--cb);display:flex;align-items:center;justify-content:center;font-size:80px;color:var(--cb2)}
+
+/* ── DELIVERY ── */
+.del-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:56px}
+.del-card{background:var(--bg2);padding:32px}
+.del-icon{font-size:28px;margin-bottom:16px}
+.del-title{font-size:15px;font-weight:700;margin-bottom:8px}
+.del-text{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* ── CTA ── */
+.cta-sec{background:var(--bg2);border-top:1px solid var(--cb);border-bottom:1px solid var(--cb);text-align:center;padding:80px 5vw}
+.cta-sec .sec-title{max-width:600px;margin:0 auto 12px}
+.cta-sec .sec-sub{margin:0 auto 40px;text-align:center}
+
+/* ── FOOTER ── */
+footer{background:var(--bg2);border-top:1px solid var(--cb);padding:60px 5vw 32px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-logo{font-family:var(--serif);font-size:20px;font-weight:900;color:var(--gold);letter-spacing:3px;margin-bottom:12px}
+.footer-tagline{font-size:13px;color:var(--text3);line-height:1.6;max-width:260px}
+.footer-hd{font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:16px}
+.footer-links{display:flex;flex-direction:column;gap:8px}
+.footer-links a{font-size:13px;color:var(--text2);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--gold)}
+.footer-bottom{border-top:1px solid var(--cb);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:gap}
+.footer-copy{font-size:11px;color:var(--text3)}
+
+/* ── ANIMATIONS ── */
+.fade-up{opacity:0;transform:translateY(28px);transition:opacity .6s,transform .6s}
+.fade-up.visible{opacity:1;transform:none}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .how-grid,.del-grid{grid-template-columns:1fr 1fr}
+  .about-inner{grid-template-columns:1fr;gap:40px}
+  .about-visual{display:none}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .nav-links{display:none}
+  .nav-ham{display:flex}
+}
+@media(max-width:600px){
+  section{padding:64px 5vw}
+  .how-grid,.del-grid,.cat-grid{grid-template-columns:1fr}
+  .hero-stats{gap:28px}
+  .footer-grid{grid-template-columns:1fr}
+  .hero-btns{flex-direction:column}
+  .btn-primary,.btn-ghost{text-align:center;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cur" id="curDot"><div class="cur-dot"></div></div>
+<div class="cur" id="curRing"><div class="cur-ring" id="curRingEl"></div></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo">МОЩЕНИЕ</a>
+  <div class="nav-links">
+    <a href="#catalog">Каталог</a>
+    <a href="#about">О нас</a>
+    <a href="#delivery">Доставка</a>
+    <a href="#how">Как это работает</a>
+    <a href="constructor.html" class="nav-cta">Конструктор →</a>
+  </div>
+  <button class="nav-ham" id="navHam" aria-label="Меню">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile menu -->
+<div class="nav-mob" id="navMob">
+  <a href="#catalog" class="nav-mob-link">Каталог</a>
+  <a href="#about" class="nav-mob-link">О нас</a>
+  <a href="#delivery" class="nav-mob-link">Доставка</a>
+  <a href="#how" class="nav-mob-link">Инструкция</a>
+  <a href="constructor.html" class="nav-cta">Открыть конструктор →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-label">Премиум тротуарная плитка</div>
+  <h1 class="hero-title">Дорожки любой<br><span>формы и изгиба</span></h1>
+  <p class="hero-sub">Уникальная клиновая плитка шириной 1000 мм для создания прямых и радиусных дорожек. Собирается как конструктор — с точным зазором 146 мм.</p>
+  <div class="hero-btns">
+    <a href="constructor.html" class="btn-primary">Построить дорожку →</a>
+    <a href="#catalog" class="btn-ghost">Смотреть каталог</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-n">1000</div><div class="hero-stat-l">мм — ширина плитки</div></div>
+    <div class="hero-stat"><div class="hero-stat-n">146</div><div class="hero-stat-l">мм — стандартный зазор</div></div>
+    <div class="hero-stat"><div class="hero-stat-n">11</div><div class="hero-stat-l">видов форм и углов</div></div>
+    <div class="hero-stat"><div class="hero-stat-n">45°</div><div class="hero-stat-l">максимальный поворот</div></div>
+  </div>
+</section>
+
+<!-- CATALOG -->
+<section id="catalog">
+  <div class="sec-label">Каталог</div>
+  <h2 class="sec-title">Виды плитки</h2>
+  <p class="sec-sub">Все плитки имеют ширину 1000 мм. Клиновые создают повороты дорожки — от плавных 5° до крутых 45°.</p>
+  <div class="cat-grid">
+
+    <article class="cat-card fade-up">
+      <div class="cat-img"><canvas width="240" height="180" id="cv0"></canvas></div>
+      <h3 class="cat-name">Прямая</h3>
+      <div class="cat-dims">1000 × 382 мм</div>
+      <p class="cat-desc">Прямоугольная плитка для прямых участков дорожки. Кладётся поперёк направления движения.</p>
+      <div class="cat-price">1 200 <span>₽/шт</span></div>
+      <a href="constructor.html" class="cat-link">В конструктор →</a>
+    </article>
+
+    <article class="cat-card fade-up">
+      <div class="cat-img"><canvas width="240" height="180" id="cv1"></canvas></div>
+      <h3 class="cat-name">Клин 5°</h3>
+      <div class="cat-dims">1000 мм, угол 5°</div>
+      <p class="cat-desc">Плавный изгиб дорожки. Для плавных дуг и больших радиусов поворота.</p>
+      <div class="cat-price">1 350 <span>₽/шт</span></div>
+      <a href="constructor.html" class="cat-link">В конструктор →</a>
+    </article>
+
+    <article class="cat-card fade-up">
+      <div class="cat-img"><canvas width="240" height="180" id="cv2"></canvas></div>
+      <h3 class="cat-name">Клин 15°</h3>
+      <div class="cat-dims">1000 мм, угол 15°</div>
+      <p class="cat-desc">Средний радиус поворота. Универсальный вариант для большинства садовых дорожек.</p>
+      <div class="cat-price">1 500 <span>₽/шт</span></div>
+      <a href="constructor.html" class="cat-link">В конструктор →</a>
+    </article>
+
+    <article class="cat-card fade-up">
+      <div class="cat-img"><canvas width="240" height="180" id="cv3"></canvas></div>
+      <h3 class="cat-name">Клин 30°</h3>
+      <div class="cat-dims">1000 мм, угол 30°</div>
+      <p class="cat-desc">Крутой поворот. Для компактных изгибов и S-образных дорожек на небольших участках.</p>
+      <div class="cat-price">1 700 <span>₽/шт</span></div>
+      <a href="constructor.html" class="cat-link">В конструктор →</a>
+    </article>
+
+    <article class="cat-card fade-up">
+      <div class="cat-img"><canvas width="240" height="180" id="cv4"></canvas></div>
+      <h3 class="cat-name">Клин 45°</h3>
+      <div class="cat-dims">1000 мм, угол 45°</div>
+      <p class="cat-desc">Максимальный поворот. Всего 8 плиток образуют полный разворот на 360°.</p>
+      <div class="cat-price">1 900 <span>₽/шт</span></div>
+      <a href="constructor.html" class="cat-link">В конструктор →</a>
+    </article>
+
+    <article class="cat-card fade-up" style="background:var(--bg3);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:40px 32px">
+      <div style="font-size:40px;margin-bottom:20px">⚙️</div>
+      <h3 class="cat-name">Онлайн-конструктор</h3>
+      <p class="cat-desc" style="margin-bottom:24px">Спроектируйте свою дорожку онлайн. Система рассчитает количество и стоимость.</p>
+      <a href="constructor.html" class="btn-primary" style="font-size:11px;padding:12px 24px">Открыть →</a>
+    </article>
+
+  </div>
+</section>
+
+<!-- HOW -->
+<section id="how" style="background:var(--bg2);border-top:1px solid var(--cb);border-bottom:1px solid var(--cb)">
+  <div class="sec-label">Принцип работы</div>
+  <h2 class="sec-title">Как это работает</h2>
+  <div class="how-grid">
+    <div class="how-card fade-up">
+      <div class="how-n">01</div>
+      <div class="how-title">Выберите тип плитки</div>
+      <div class="how-text">Прямая для прямых участков, клиновая — для поворотов. Каждая плитка имеет ширину 1000 мм.</div>
+    </div>
+    <div class="how-card fade-up">
+      <div class="how-n">02</div>
+      <div class="how-title">Стройте дорожку</div>
+      <div class="how-text">В конструкторе кликайте — каждая новая плитка стыкуется автоматически с зазором 146 мм.</div>
+    </div>
+    <div class="how-card fade-up">
+      <div class="how-n">03</div>
+      <div class="how-title">Получите расчёт</div>
+      <div class="how-text">Система автоматически подсчитывает количество плиток каждого вида и общую стоимость.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <div>
+      <div class="sec-label">О компании</div>
+      <h2 class="sec-title">Точность в каждой детали</h2>
+      <p class="sec-sub">Производим бетонную тротуарную плитку с 2010 года. Разработали уникальную систему клиновой плитки для дорожек любой формы.</p>
+      <div class="about-list">
+        <div class="about-item fade-up">
+          <div class="about-icon">📐</div>
+          <div>
+            <div class="about-item-title">Точные размеры</div>
+            <div class="about-item-text">Допуск ±1 мм. Плитки идеально стыкуются без подрезки.</div>
+          </div>
+        </div>
+        <div class="about-item fade-up">
+          <div class="about-icon">🏗️</div>
+          <div>
+            <div class="about-item-title">Собственное производство</div>
+            <div class="about-item-text">Вибропрессованный бетон M500. Морозостойкость F300.</div>
+          </div>
+        </div>
+        <div class="about-item fade-up">
+          <div class="about-icon">🚚</div>
+          <div>
+            <div class="about-item-title">Доставка по России</div>
+            <div class="about-item-text">Отгрузка от 1 поддона. Собственный транспорт по Москве.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="about-visual fade-up">🏛️</div>
+  </div>
+</section>
+
+<!-- DELIVERY -->
+<section id="delivery" style="background:var(--bg2);border-top:1px solid var(--cb)">
+  <div class="sec-label">Доставка и оплата</div>
+  <h2 class="sec-title">Удобно и надёжно</h2>
+  <div class="del-grid">
+    <div class="del-card fade-up">
+      <div class="del-icon">📍</div>
+      <div class="del-title">Самовывоз</div>
+      <div class="del-text">Бесплатно. Склад в Москве. Пн–Пт 8:00–18:00, Сб 9:00–15:00.</div>
+    </div>
+    <div class="del-card fade-up">
+      <div class="del-icon">🚛</div>
+      <div class="del-title">Доставка по Москве</div>
+      <div class="del-text">От 2 500 ₽. Собственным транспортом. Разгрузка включена.</div>
+    </div>
+    <div class="del-card fade-up">
+      <div class="del-icon">🇷🇺</div>
+      <div class="del-title">По всей России</div>
+      <div class="del-text">Транспортными компаниями. Стоимость по тарифу перевозчика.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-sec">
+  <div class="sec-label">Начните прямо сейчас</div>
+  <h2 class="sec-title">Спроектируйте свою дорожку онлайн</h2>
+  <p class="sec-sub">Конструктор бесплатный. Результат — точный список плиток с ценами.</p>
+  <a href="constructor.html" class="btn-primary" style="font-size:13px;padding:18px 40px">Открыть конструктор →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">МОЩЕНИЕ</div>
+      <div class="footer-tagline">Бетонная тротуарная плитка премиум-класса для дорожек любой формы.</div>
+    </div>
+    <div>
+      <div class="footer-hd">Навигация</div>
+      <div class="footer-links">
+        <a href="#catalog">Каталог</a>
+        <a href="#about">О компании</a>
+        <a href="#delivery">Доставка</a>
+        <a href="constructor.html">Конструктор</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-hd">Контакты</div>
+      <div class="footer-links">
+        <a href="tel:+74951234567">+7 (495) 123-45-67</a>
+        <a href="mailto:info@moshenie.ru">info@moshenie.ru</a>
+        <a href="#">Москва, ул. Производственная, 1</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2024 МОЩЕНИЕ. Все права защищены.</div>
+    <div class="footer-copy"><a href="constructor.html" style="color:var(--text3);text-decoration:none">Конструктор дорожки</a></div>
+  </div>
+</footer>
+
+<script>
+/* ── CURSOR (плавный через requestAnimationFrame) ── */
+var mx = window.innerWidth/2, my = window.innerHeight/2;
+var dx = mx, dy = my, rx = mx, ry = my;
+var dot = document.getElementById('curDot');
+var ring = document.getElementById('curRing');
+var ringEl = document.getElementById('curRingEl');
+var big = false;
+
+document.addEventListener('mousemove', function(e){ mx = e.clientX; my = e.clientY; });
+
+function animCursor(){
+  // dot follows instantly
+  dx = mx; dy = my;
+  // ring follows with lag
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  dot.style.transform  = 'translate('+dx+'px,'+dy+'px)';
+  ring.style.transform = 'translate('+rx+'px,'+ry+'px)';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+
+document.querySelectorAll('a,button').forEach(function(el){
+  el.addEventListener('mouseenter', function(){ ringEl.classList.add('big'); });
+  el.addEventListener('mouseleave', function(){ ringEl.classList.remove('big'); });
+});
+
+/* ── NAV ── */
+var nav = document.getElementById('mainNav');
+window.addEventListener('scroll', function(){ nav.classList.toggle('scrolled', window.scrollY > 50); });
+
+var ham  = document.getElementById('navHam');
+var mob  = document.getElementById('navMob');
+ham.addEventListener('click', function(){
+  ham.classList.toggle('open');
+  mob.classList.toggle('open');
+  document.body.style.overflow = mob.classList.contains('open') ? 'hidden' : '';
+});
+document.querySelectorAll('.nav-mob-link').forEach(function(a){
+  a.addEventListener('click', function(){
+    ham.classList.remove('open'); mob.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+
+/* ── SCROLL ANIMATIONS ── */
+var obs = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold: 0.12});
+document.querySelectorAll('.fade-up').forEach(function(el){ obs.observe(el); });
+
+/* ── CATALOG TILE PREVIEWS ── */
+function drawTilePreview(canvasId, sideL, sideR, color) {
+  var cv = document.getElementById(canvasId);
+  if (!cv) return;
+  var ctx = cv.getContext('2d');
+  var W = cv.width, H = cv.height;
+  ctx.clearRect(0,0,W,H);
+
+  // Draw 3 tiles to show the path effect
+  var tileW = W * 0.7; // tile width in canvas
+  var scale = tileW / 1000; // 1000mm → canvas px
+  var pL = sideL * scale;
+  var pR = sideR * scale;
+  var gap = 146 * scale;
+  var x0 = (W - tileW) / 2;
+  var colors = [color, shadeColor(color, -12), shadeColor(color, -24)];
+
+  for (var i = 0; i < 3; i++) {
+    var y0 = 10 + i * (Math.max(pL,pR) + gap);
+    if (y0 + Math.max(pL,pR) > H - 10) break;
+    // trapezoid: top-left, top-right, bot-right, bot-left
+    ctx.beginPath();
+    ctx.moveTo(x0,        y0);
+    ctx.lineTo(x0+tileW,  y0);
+    ctx.lineTo(x0+tileW,  y0+pR);
+    ctx.lineTo(x0,        y0+pL);
+    ctx.closePath();
+    ctx.fillStyle = colors[i];
+    ctx.fill();
+    // texture lines
+    ctx.save();
+    ctx.globalAlpha = 0.08;
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 0.7;
+    for (var t = 0.25; t < 1; t += 0.25) {
+      ctx.beginPath();
+      ctx.moveTo(x0,       y0 + pL*t);
+      ctx.lineTo(x0+tileW, y0 + pR*t);
+      ctx.stroke();
+    }
+    ctx.restore();
+    // border
+    ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.moveTo(x0,y0); ctx.lineTo(x0+tileW,y0);
+    ctx.lineTo(x0+tileW,y0+pR); ctx.lineTo(x0,y0+pL);
+    ctx.closePath(); ctx.stroke();
+    // gap highlight
+    if (i < 2) {
+      var nextY = y0 + Math.max(pL,pR) + gap;
+      ctx.fillStyle = 'rgba(196,147,58,0.08)';
+      ctx.fillRect(x0, y0+Math.max(pL,pR), tileW, gap);
+    }
+  }
+}
+
+function shadeColor(col, pct) {
+  var n = parseInt(col.slice(1), 16);
+  var r = Math.min(255,Math.max(0,((n>>16)&0xff)+pct));
+  var g = Math.min(255,Math.max(0,((n>>8) &0xff)+pct));
+  var b = Math.min(255,Math.max(0,( n     &0xff)+pct));
+  return '#'+((1<<24)|(r<<16)|(g<<8)|b).toString(16).slice(1);
+}
+
+drawTilePreview('cv0', 382, 382, '#d4c8b4');
+drawTilePreview('cv1', 337, 427, '#ccc0aa');
+drawTilePreview('cv2', 247, 517, '#b4a892');
+drawTilePreview('cv3', 157, 607, '#a89c86');
+drawTilePreview('cv4',  67, 697, '#9c9080');
+</script>
+</body>
+</html>

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Конструктор дорожки — МОЩЕНИЕ</title>
+<meta name="description" content="Онлайн-конструктор тротуарной дорожки из клиновой плитки. Постройте дорожку любой формы, получите точный расчёт количества и стоимости.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="/constructor.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;cursor:none!important}
+:root{
+  --bg:#0c0b07;--bg2:#13120e;--bg3:#1a1714;--bg4:#22201a;
+  --cb:#2a2820;--cb2:#3a3830;
+  --text:#f0ece4;--text2:#c8c0b0;--text3:#807868;
+  --gold:#c4933a;--gold2:#e0aa50;
+  --sans:'Raleway',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+
+/* ── CURSOR ── */
+.cur{position:fixed;pointer-events:none;z-index:9999;top:0;left:0;will-change:transform}
+.cur-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;margin:-3px 0 0 -3px}
+.cur-ring{width:28px;height:28px;border:1.5px solid var(--gold);border-radius:50%;margin:-14px 0 0 -14px;opacity:.6;transition:width .18s,height .18s,opacity .18s,margin .18s}
+.cur-ring.big{width:46px;height:46px;margin:-23px 0 0 -23px;opacity:.3}
+
+/* ── LAYOUT ── */
+.app{display:flex;flex-direction:column;height:100dvh}
+.topbar{display:flex;align-items:center;gap:6px;padding:0 10px;height:46px;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--cb);z-index:10}
+.tb-logo{font-size:13px;font-weight:800;letter-spacing:3px;color:var(--gold);text-decoration:none;margin-right:6px;white-space:nowrap}
+.tb-sep{width:1px;height:22px;background:var(--cb);flex-shrink:0;margin:0 2px}
+.tb-btn{background:var(--bg3);border:1px solid var(--cb);color:var(--text2);font-size:10px;font-weight:700;letter-spacing:.5px;padding:5px 10px;border-radius:2px;white-space:nowrap;transition:all .12s;font-family:var(--sans)}
+.tb-btn:hover{border-color:var(--cb2);color:var(--text)}
+.tb-btn.act{background:rgba(196,147,58,.1);border-color:var(--gold);color:var(--gold)}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.tb-zoom{display:flex;align-items:center;gap:3px}
+.tb-zval{font-size:10px;font-family:var(--mono);color:var(--text3);min-width:36px;text-align:center}
+.tb-coords{font-size:9px;font-family:var(--mono);color:var(--text3);min-width:130px}
+.order-btn{background:var(--gold);color:#000;border:none;font-size:11px;font-weight:800;padding:7px 16px;border-radius:2px;letter-spacing:.5px;transition:background .15s;font-family:var(--sans)}
+.order-btn:hover{background:var(--gold2)}
+.badge{background:#c04030;color:#fff;font-size:9px;font-weight:800;min-width:16px;height:16px;border-radius:8px;padding:0 4px;display:inline-flex;align-items:center;justify-content:center;margin-left:4px}
+
+/* ── MAIN ── */
+.main{display:flex;flex:1;overflow:hidden}
+
+/* ── PANEL LEFT ── */
+.panel-l{width:210px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--cb);display:flex;flex-direction:column;overflow:hidden}
+.ph{font-size:8px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);padding:9px 10px 7px;border-bottom:1px solid var(--cb);flex-shrink:0}
+.pscroll{overflow-y:auto;flex:1}
+.pscroll::-webkit-scrollbar{width:2px}
+.pscroll::-webkit-scrollbar-thumb{background:var(--cb2)}
+
+.tc{display:flex;align-items:center;gap:8px;padding:7px 10px;border-bottom:1px solid var(--cb);transition:background .1s}
+.tc:hover{background:var(--bg3)}
+.tc.act{background:rgba(196,147,58,.07);border-left:2px solid var(--gold)}
+.tc.act .tc-name{color:var(--gold)}
+.tc-svg{width:42px;height:38px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.tc-name{font-size:10px;font-weight:700;color:var(--text);line-height:1.3}
+.tc-sub{font-size:8px;color:var(--text3);font-family:var(--mono);margin-top:1px}
+.tc-turn{font-size:9px;color:var(--gold);font-weight:700;margin-top:1px}
+
+/* ── CANVAS ── */
+.cvwrap{flex:1;position:relative;overflow:hidden}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+
+/* ── HINT ── */
+.hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;display:none}
+.hint-t{font-size:16px;font-weight:800;color:var(--text3);letter-spacing:2px;margin-bottom:10px}
+.hint-s{font-size:12px;color:var(--text3);line-height:1.9}
+.hint-s b{color:rgba(196,147,58,.7)}
+
+/* ── PANEL RIGHT ── */
+.panel-r{width:170px;flex-shrink:0;background:var(--bg2);border-left:1px solid var(--cb);display:flex;flex-direction:column;overflow:hidden}
+.psec{padding:10px 12px;border-bottom:1px solid var(--cb)}
+.psec-hd{font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.prow{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.pk{font-size:9px;color:var(--text3)}
+.pv{font-size:10px;font-weight:700;color:var(--text);font-family:var(--mono)}
+.pv.gold{color:var(--gold)}
+.pac{width:100%;background:var(--bg3);border:1px solid var(--cb);color:var(--text2);font-size:9px;font-weight:700;padding:6px 8px;border-radius:2px;text-align:left;margin-bottom:4px;transition:all .12s;font-family:var(--sans)}
+.pac:hover{border-color:var(--cb2);color:var(--text)}
+.pac.d:hover{border-color:#c04040;color:#e06060}
+
+/* ── BOTTOM BAR mobile ── */
+.bbar{display:none;height:84px;background:var(--bg2);border-top:1px solid var(--cb);overflow-x:auto;white-space:nowrap;padding:6px 8px;flex-shrink:0}
+.bbar::-webkit-scrollbar{height:2px}
+.bbar::-webkit-scrollbar-thumb{background:var(--cb2)}
+.bbi{display:inline-flex;flex-direction:column;align-items:center;gap:3px;padding:5px 7px;border:1px solid var(--cb);border-radius:2px;background:var(--bg3);margin-right:5px;min-width:58px;vertical-align:top;transition:all .12s}
+.bbi.act{border-color:var(--gold);background:rgba(196,147,58,.07)}
+.bbi-name{font-size:8px;font-weight:700;color:var(--text2);text-align:center;white-space:normal;max-width:54px;line-height:1.2}
+.bbi.act .bbi-name{color:var(--gold)}
+
+/* ── MODAL ── */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal.open{display:flex}
+.mbox{background:var(--bg2);border:1px solid var(--cb2);border-radius:3px;width:100%;max-width:440px;max-height:82vh;display:flex;flex-direction:column}
+.mhd{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--cb);flex-shrink:0}
+.mtitle{font-size:13px;font-weight:800;letter-spacing:.5px}
+.mclose{background:none;border:none;color:var(--text3);font-size:20px;line-height:1;font-family:var(--sans)}
+.mclose:hover{color:var(--text)}
+.mbody{padding:14px 18px;overflow-y:auto;flex:1}
+.mitem{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--cb);gap:10px}
+.mitem:last-child{border-bottom:none}
+.mi-name{font-size:12px;font-weight:700}
+.mi-sub{font-size:9px;color:var(--text3);margin-top:2px;font-family:var(--mono)}
+.mi-right{text-align:right;flex-shrink:0}
+.mi-qty{font-size:11px;font-weight:700;color:var(--text2)}
+.mi-price{font-size:12px;font-weight:800;color:var(--gold);margin-top:2px}
+.mfoot{padding:14px 18px;border-top:1px solid var(--cb);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.mtotal-l{font-size:10px;color:var(--text3)}
+.mtotal-v{font-size:20px;font-weight:800;color:var(--gold)}
+.mconfirm{background:var(--gold);color:#000;border:none;font-size:11px;font-weight:800;padding:10px 20px;border-radius:2px;letter-spacing:.5px;font-family:var(--sans)}
+.mconfirm:hover{background:var(--gold2)}
+.empty{font-size:11px;color:var(--text3);text-align:center;padding:20px 0}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--bg4);border:1px solid var(--gold);color:var(--text);font-size:11px;font-weight:600;padding:8px 18px;border-radius:3px;display:none;z-index:300;pointer-events:none;letter-spacing:.3px;white-space:nowrap}
+
+/* ── RESPONSIVE ── */
+@media(max-width:860px){
+  .panel-l{display:none}
+  .panel-r{width:130px}
+  .bbar{display:block}
+  .tb-coords{display:none}
+}
+@media(max-width:540px){
+  .panel-r{display:none}
+  .tb-logo{display:none}
+  .topbar{gap:3px;padding:0 6px}
+}
+</style>
+</head>
+<body>
+<!-- Cursor -->
+<div class="cur" id="curDot"><div class="cur-dot"></div></div>
+<div class="cur" id="curRing"><div class="cur-ring" id="curRingEl"></div></div>
+
+<div class="app">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <a href="index.html" class="tb-logo">← МОЩЕНИЕ</a>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" id="btnUndo">↩ Отмена</button>
+    <button class="tb-btn" id="btnRedo">↪ Вернуть</button>
+    <button class="tb-btn" id="btnDel">✕ Убрать</button>
+    <button class="tb-btn" id="btnClear">🗑 Очистить</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn act" id="btnGrid">⊞ Сетка</button>
+    <div class="tb-sep"></div>
+    <div class="tb-zoom">
+      <button class="tb-btn" id="btnZmOut">−</button>
+      <span class="tb-zval" id="zmVal">60%</span>
+      <button class="tb-btn" id="btnZmIn">+</button>
+      <button class="tb-btn" id="btnZmReset">⌂</button>
+    </div>
+    <div class="tb-right">
+      <span class="tb-coords" id="coords"></span>
+      <button class="order-btn" id="btnOrder">Заказать <span class="badge" id="badge">0</span></button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- LEFT -->
+    <div class="panel-l">
+      <div class="ph">Тип плитки</div>
+      <div class="pscroll" id="catalog"></div>
+    </div>
+
+    <!-- CANVAS -->
+    <div class="cvwrap" id="cvwrap">
+      <canvas id="cv"></canvas>
+      <div class="hint" id="hint">
+        <div class="hint-t">Начните дорожку</div>
+        <div class="hint-s">
+          1. Выберите тип плитки слева<br>
+          2. Кликните на холст — добавить плитку<br>
+          3. Плитки стыкуются автоматически<br><br>
+          <b>Зазор: 146 мм (фиксирован)</b><br>
+          <b>Alt+перетащить</b> — панорама
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="panel-r">
+      <div class="psec">
+        <div class="psec-hd">Дорожка</div>
+        <div class="prow"><span class="pk">Плиток</span><span class="pv" id="pCount">0</span></div>
+        <div class="prow"><span class="pk">Длина</span><span class="pv" id="pLen">0 м</span></div>
+        <div class="prow"><span class="pk">Зазор</span><span class="pv gold">146 мм</span></div>
+      </div>
+      <div class="psec">
+        <div class="psec-hd">Состав</div>
+        <div id="pList"><div class="empty">Пусто</div></div>
+      </div>
+      <div class="psec">
+        <div class="psec-hd">Управление</div>
+        <button class="pac" id="btnDel2">✕ Убрать последнюю</button>
+        <button class="pac d" id="btnClear2">🗑 Очистить всё</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bbar" id="bbar"></div>
+</div>
+
+<!-- ORDER MODAL -->
+<div class="modal" id="orderModal">
+  <div class="mbox">
+    <div class="mhd"><span class="mtitle">Заказ плитки</span><button class="mclose" id="mClose">✕</button></div>
+    <div class="mbody" id="mItems"></div>
+    <div class="mfoot">
+      <div><div class="mtotal-l">Итого:</div><div class="mtotal-v" id="mTotal">0 ₽</div></div>
+      <button class="mconfirm" id="mConfirm">Оформить заказ</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   КОНСТРУКТОР ДОРОЖКИ
+   
+   Физика:
+   • Все плитки шириной 1000 мм (сторона стыковки)
+   • Прямая: 1000×382 мм (прямоугольник)
+   • Клиновые: трапеции, создают поворот на turn°
+   • Стыковка: нижняя сторона → зазор 146 мм → верхняя следующей
+   • Масштаб: 1 мм = 0.2 px  →  1000 мм = 200 px
+═══════════════════════════════════════════════════ */
+var SC  = 0.2;             // 1мм → px
+var TW  = 1000 * SC;       // 200px ширина плитки
+var GAP = 146  * SC;       // 29.2px зазор
+
+var TILES = [
+  {id:'rect', name:'Прямая',         sub:'1000×382 мм',  price:1200, sL:382, sR:382, turn:0,   col:'#d4c8b4'},
+  {id:'c5L',  name:'Поворот 5° ←',  sub:'1000 мм, 5°',  price:1350, sL:337, sR:427, turn:-5,  col:'#ccc0aa'},
+  {id:'c5R',  name:'Поворот 5° →',  sub:'1000 мм, 5°',  price:1350, sL:427, sR:337, turn:5,   col:'#ccc0aa'},
+  {id:'c10L', name:'Поворот 10° ←', sub:'1000 мм, 10°', price:1400, sL:292, sR:472, turn:-10, col:'#c0b49e'},
+  {id:'c10R', name:'Поворот 10° →', sub:'1000 мм, 10°', price:1400, sL:472, sR:292, turn:10,  col:'#c0b49e'},
+  {id:'c15L', name:'Поворот 15° ←', sub:'1000 мм, 15°', price:1500, sL:247, sR:517, turn:-15, col:'#b4a892'},
+  {id:'c15R', name:'Поворот 15° →', sub:'1000 мм, 15°', price:1500, sL:517, sR:247, turn:15,  col:'#b4a892'},
+  {id:'c30L', name:'Поворот 30° ←', sub:'1000 мм, 30°', price:1700, sL:157, sR:607, turn:-30, col:'#a89c86'},
+  {id:'c30R', name:'Поворот 30° →', sub:'1000 мм, 30°', price:1700, sL:607, sR:157, turn:30,  col:'#a89c86'},
+  {id:'c45L', name:'Поворот 45° ←', sub:'1000 мм, 45°', price:1900, sL: 67, sR:697, turn:-45, col:'#9c9080'},
+  {id:'c45R', name:'Поворот 45° →', sub:'1000 мм, 45°', price:1900, sL:697, sR: 67, turn:45,  col:'#9c9080'},
+];
+function getTile(id){ return TILES.find(function(t){return t.id===id;})||TILES[0]; }
+
+/* ── STATE ── */
+var path   = [];
+var active = 'rect';
+var zoom   = 0.6, pan = {x:0, y:0};
+var showGrid = true;
+var hist = [[]], fut = [];
+var panDrag = false, lastM = {x:0, y:0};
+
+/* ── GEOMETRY ──
+   Плитка в позиции (x,y) — центр верхней (входной) стороны.
+   angle — направление вглубь (0 = вниз по оси Y).
+   Углы трапеции в локальных координатах:
+     [0] top-left  (-TW/2, 0)
+     [1] top-right (+TW/2, 0)
+     [2] bot-right (+TW/2, sR*SC)
+     [3] bot-left  (-TW/2, sL*SC)
+*/
+function corners(tile) {
+  var def = getTile(tile.typeId);
+  var hw = TW / 2;
+  var pL = def.sL * SC, pR = def.sR * SC;
+  var a = tile.angle, ca = Math.cos(a), sa = Math.sin(a);
+  function rot(lx, ly) {
+    return { x: tile.x + ca*lx - sa*ly, y: tile.y + sa*lx + ca*ly };
+  }
+  return [ rot(-hw,0), rot(hw,0), rot(hw,pR), rot(-hw,pL) ];
+}
+
+/* Позиция и угол следующей плитки */
+function nextOrigin(tile) {
+  var def = getTile(tile.typeId);
+  var avg = (def.sL + def.sR) / 2 * SC;
+  var a = tile.angle, ca = Math.cos(a), sa = Math.sin(a);
+  // центр нижней стороны текущей
+  var bx = tile.x - sa * avg;
+  var by = tile.y + ca * avg;
+  // новый угол
+  var na = a + def.turn * Math.PI / 180;
+  var cn = Math.cos(na), sn = Math.sin(na);
+  // отступить на GAP вдоль нового направления
+  return { x: bx - sn*GAP, y: by + cn*GAP, angle: na };
+}
+
+/* ── CANVAS ── */
+var cv   = document.getElementById('cv');
+var ctx  = cv.getContext('2d');
+var wrap = document.getElementById('cvwrap');
+
+function resize() {
+  cv.width  = wrap.clientWidth;
+  cv.height = wrap.clientHeight;
+  draw();
+}
+window.addEventListener('resize', resize);
+
+function w2c(wx, wy) {
+  return { x: wx*zoom + pan.x + cv.width/2, y: wy*zoom + pan.y + cv.height/2 };
+}
+function c2w(cx, cy) {
+  return { x: (cx - pan.x - cv.width/2)/zoom, y: (cy - pan.y - cv.height/2)/zoom };
+}
+
+/* ── DRAW ── */
+function draw() {
+  var W = cv.width, H = cv.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = '#0c0b07';
+  ctx.fillRect(0,0,W,H);
+  ctx.save();
+  ctx.translate(pan.x + W/2, pan.y + H/2);
+  ctx.scale(zoom, zoom);
+  if (showGrid) drawGrid();
+  for (var i=0; i<path.length; i++) drawTile(path[i], i);
+  if (path.length > 0) drawGhost();
+  ctx.restore();
+  updateUI();
+}
+
+function drawGrid() {
+  var iz = 1/zoom, W = cv.width, H = cv.height;
+  var s = 200; // 1000мм
+  var ox = (-pan.x - W/2)*iz, oy = (-pan.y - H/2)*iz;
+  ctx.strokeStyle = '#181610'; ctx.lineWidth = 0.5*iz;
+  for (var x=Math.floor(ox/s)*s; x<ox+W*iz; x+=s) {
+    ctx.beginPath(); ctx.moveTo(x,oy); ctx.lineTo(x,oy+H*iz); ctx.stroke();
+  }
+  for (var y=Math.floor(oy/s)*s; y<oy+H*iz; y+=s) {
+    ctx.beginPath(); ctx.moveTo(ox,y); ctx.lineTo(ox+W*iz,y); ctx.stroke();
+  }
+  // major
+  var ms = s*5;
+  ctx.strokeStyle = '#222018'; ctx.lineWidth = 1*iz;
+  for (var x2=Math.floor(ox/ms)*ms; x2<ox+W*iz; x2+=ms) {
+    ctx.beginPath(); ctx.moveTo(x2,oy); ctx.lineTo(x2,oy+H*iz); ctx.stroke();
+  }
+  for (var y2=Math.floor(oy/ms)*ms; y2<oy+H*iz; y2+=ms) {
+    ctx.beginPath(); ctx.moveTo(ox,y2); ctx.lineTo(ox+W*iz,y2); ctx.stroke();
+  }
+  // axes
+  ctx.strokeStyle = '#2a2820'; ctx.lineWidth = 1.2*iz;
+  ctx.beginPath(); ctx.moveTo(-W*iz,0); ctx.lineTo(W*iz,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,-H*iz); ctx.lineTo(0,H*iz); ctx.stroke();
+}
+
+function drawTile(tile, idx) {
+  var def = getTile(tile.typeId);
+  var pts = corners(tile);
+  var last = (idx === path.length-1);
+  ctx.save();
+  if (last) { ctx.shadowColor='rgba(196,147,58,.3)'; ctx.shadowBlur=18; }
+  // fill
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x,pts[0].y);
+  ctx.lineTo(pts[1].x,pts[1].y);
+  ctx.lineTo(pts[2].x,pts[2].y);
+  ctx.lineTo(pts[3].x,pts[3].y);
+  ctx.closePath();
+  ctx.fillStyle = tile.col || def.col;
+  ctx.fill();
+  // texture lines
+  ctx.save();
+  ctx.globalAlpha=0.06; ctx.strokeStyle='#fff'; ctx.lineWidth=0.5;
+  for (var t=0.25; t<1; t+=0.25) {
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x+(pts[3].x-pts[0].x)*t, pts[0].y+(pts[3].y-pts[0].y)*t);
+    ctx.lineTo(pts[1].x+(pts[2].x-pts[1].x)*t, pts[1].y+(pts[2].y-pts[1].y)*t);
+    ctx.stroke();
+  }
+  ctx.restore();
+  // outline
+  ctx.shadowBlur=0;
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x,pts[0].y);
+  ctx.lineTo(pts[1].x,pts[1].y);
+  ctx.lineTo(pts[2].x,pts[2].y);
+  ctx.lineTo(pts[3].x,pts[3].y);
+  ctx.closePath();
+  ctx.strokeStyle = last ? '#c4933a' : 'rgba(0,0,0,.65)';
+  ctx.lineWidth   = last ? 2 : 0.8;
+  ctx.stroke();
+  // number
+  var cx=(pts[0].x+pts[1].x+pts[2].x+pts[3].x)/4;
+  var cy=(pts[0].y+pts[1].y+pts[2].y+pts[3].y)/4;
+  ctx.fillStyle = last ? '#c4933a' : 'rgba(255,255,255,.3)';
+  ctx.font='bold 11px JetBrains Mono';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(idx+1, cx, cy);
+  ctx.restore();
+}
+
+function drawGhost() {
+  var last = path[path.length-1];
+  var orig = nextOrigin(last);
+  var def  = getTile(active);
+  var ghost = {typeId:active, x:orig.x, y:orig.y, angle:orig.angle, col:def.col};
+  var gp = corners(ghost);
+  var lp = corners(last);
+  ctx.save();
+  // gap zone
+  ctx.globalAlpha=0.1;
+  ctx.fillStyle='#c4933a';
+  ctx.beginPath();
+  ctx.moveTo(lp[3].x,lp[3].y); ctx.lineTo(lp[2].x,lp[2].y);
+  ctx.lineTo(gp[1].x,gp[1].y); ctx.lineTo(gp[0].x,gp[0].y);
+  ctx.closePath(); ctx.fill();
+  ctx.globalAlpha=0.35; ctx.strokeStyle='#c4933a'; ctx.lineWidth=0.8;
+  ctx.setLineDash([5,4]); ctx.stroke(); ctx.setLineDash([]);
+  // gap label
+  ctx.globalAlpha=0.65; ctx.fillStyle='#c4933a';
+  ctx.font='bold 9px JetBrains Mono'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  var gx=(lp[3].x+lp[2].x+gp[1].x+gp[0].x)/4;
+  var gy=(lp[3].y+lp[2].y+gp[1].y+gp[0].y)/4;
+  ctx.fillText('146мм', gx, gy);
+  // ghost tile
+  ctx.globalAlpha=0.18;
+  ctx.beginPath();
+  ctx.moveTo(gp[0].x,gp[0].y); ctx.lineTo(gp[1].x,gp[1].y);
+  ctx.lineTo(gp[2].x,gp[2].y); ctx.lineTo(gp[3].x,gp[3].y);
+  ctx.closePath(); ctx.fillStyle=def.col; ctx.fill();
+  ctx.globalAlpha=0.45; ctx.strokeStyle='#c4933a'; ctx.lineWidth=1.5;
+  ctx.beginPath();
+  ctx.moveTo(gp[0].x,gp[0].y); ctx.lineTo(gp[1].x,gp[1].y);
+  ctx.lineTo(gp[2].x,gp[2].y); ctx.lineTo(gp[3].x,gp[3].y);
+  ctx.closePath(); ctx.stroke();
+  ctx.restore();
+}
+
+/* ── PLACEMENT ── */
+function addTile() {
+  var x, y, angle;
+  if (path.length === 0) {
+    x=0; y=0; angle=0;
+  } else {
+    var o = nextOrigin(path[path.length-1]);
+    x=o.x; y=o.y; angle=o.angle;
+  }
+  var def = getTile(active);
+  saveHist();
+  path.push({typeId:active, x:x, y:y, angle:angle, col:def.col});
+  draw();
+  hideHint();
+  toast(def.name+' добавлена');
+}
+
+function delLast() {
+  if (!path.length) return;
+  saveHist();
+  path.pop();
+  draw();
+  if (!path.length) showHint();
+}
+
+function clearAll() {
+  if (!path.length) return;
+  if (!confirm('Очистить всю дорожку?')) return;
+  saveHist();
+  path=[];
+  draw();
+  showHint();
+}
+
+/* ── HISTORY ── */
+function saveHist() {
+  hist.push(JSON.stringify(path));
+  if (hist.length>80) hist.shift();
+  fut=[];
+}
+function undo() {
+  if (hist.length<2) return;
+  fut.push(hist.pop());
+  path=JSON.parse(hist[hist.length-1]);
+  draw(); if(!path.length)showHint(); else hideHint();
+}
+function redo() {
+  if (!fut.length) return;
+  hist.push(fut.pop());
+  path=JSON.parse(hist[hist.length-1]);
+  draw(); if(!path.length)showHint(); else hideHint();
+}
+
+/* ── UI ── */
+function updateUI() {
+  var n=path.length;
+  document.getElementById('pCount').textContent=n;
+  document.getElementById('badge').textContent=n;
+  var len=0;
+  path.forEach(function(t){var d=getTile(t.typeId); len+=(d.sL+d.sR)/2;});
+  document.getElementById('pLen').textContent=(len/1000).toFixed(1)+' м';
+  var counts={};
+  path.forEach(function(t){counts[t.typeId]=(counts[t.typeId]||0)+1;});
+  var el=document.getElementById('pList');
+  if(!Object.keys(counts).length){el.innerHTML='<div class="empty">Пусто</div>';return;}
+  el.innerHTML=Object.entries(counts).map(function(e){
+    var d=getTile(e[0]);
+    return '<div class="prow"><span class="pk" style="font-size:8px;max-width:95px;line-height:1.3">'+d.name+'</span><span class="pv">'+e[1]+'шт</span></div>';
+  }).join('');
+}
+function showHint(){document.getElementById('hint').style.display='block';}
+function hideHint(){document.getElementById('hint').style.display='none';}
+function toast(msg){
+  var el=document.getElementById('toast');
+  el.textContent=msg; el.style.display='block';
+  clearTimeout(el._t); el._t=setTimeout(function(){el.style.display='none';},2200);
+}
+
+/* ── CATALOG ── */
+function buildCatalog() {
+  var cat=document.getElementById('catalog'), bb=document.getElementById('bbar');
+  cat.innerHTML=''; bb.innerHTML='';
+  TILES.forEach(function(t) {
+    var hw=16, pL=t.sL, pR=t.sR, mh=Math.max(pL,pR);
+    var sc=26/mh, h=mh*sc+4;
+    var pts=[
+      (22-hw)+',2',
+      (22+hw)+',2',
+      (22+hw)+','+(2+pR*sc),
+      (22-hw)+','+(2+pL*sc)
+    ].join(' ');
+    var svg='<svg viewBox="0 0 44 '+(h+2)+'" width="40" height="36"><polygon points="'+pts+'" fill="'+t.col+'" stroke="#555" stroke-width="0.7"/></svg>';
+    var turnTxt = t.turn===0 ? '→ прямо' : (t.turn<0 ? '← '+Math.abs(t.turn)+'°' : '→ '+t.turn+'°');
+    var isAct = active===t.id;
+
+    // desktop card
+    var card=document.createElement('div');
+    card.className='tc'+(isAct?' act':'');
+    card.innerHTML='<div class="tc-svg">'+svg+'</div><div><div class="tc-name">'+t.name+'</div><div class="tc-sub">'+t.sub+'</div><div class="tc-turn">'+turnTxt+'</div></div>';
+    card.onclick=function(){active=t.id;buildCatalog();draw();};
+    cat.appendChild(card);
+
+    // mobile bottom bar
+    var item=document.createElement('div');
+    item.className='bbi'+(isAct?' act':'');
+    item.innerHTML=svg+'<div class="bbi-name">'+t.name+'</div>';
+    item.onclick=function(){active=t.id;buildCatalog();draw();};
+    bb.appendChild(item);
+  });
+}
+
+/* ── CANVAS EVENTS ── */
+cv.addEventListener('mousedown', function(e){
+  if(e.button===1||(e.button===0&&e.altKey)){panDrag=true;lastM={x:e.clientX,y:e.clientY};return;}
+  if(e.button!==0) return;
+  addTile();
+});
+cv.addEventListener('mousemove', function(e){
+  var r=cv.getBoundingClientRect();
+  var w=c2w(e.clientX-r.left,e.clientY-r.top);
+  document.getElementById('coords').textContent='x:'+Math.round(w.x/SC)+'мм  y:'+Math.round(w.y/SC)+'мм';
+  if(panDrag){pan.x+=e.clientX-lastM.x;pan.y+=e.clientY-lastM.y;lastM={x:e.clientX,y:e.clientY};draw();}
+});
+cv.addEventListener('mouseup',   function(){panDrag=false;});
+cv.addEventListener('mouseleave',function(){panDrag=false;});
+cv.addEventListener('contextmenu',function(e){e.preventDefault();});
+cv.addEventListener('wheel',function(e){
+  e.preventDefault();
+  var f=e.deltaY<0?1.12:0.89;
+  var r=cv.getBoundingClientRect();
+  var cx=e.clientX-r.left, cy=e.clientY-r.top;
+  var wx=(cx-pan.x-cv.width/2)/zoom, wy=(cy-pan.y-cv.height/2)/zoom;
+  zoom=Math.min(15,Math.max(0.05,zoom*f));
+  pan.x=cx-cv.width/2-wx*zoom; pan.y=cy-cv.height/2-wy*zoom;
+  document.getElementById('zmVal').textContent=Math.round(zoom*100)+'%';
+  draw();
+},{passive:false});
+
+/* touch */
+var t0=null,tMoved=false,pinchD=0;
+cv.addEventListener('touchstart',function(e){
+  e.preventDefault(); tMoved=false;
+  if(e.touches.length===1){t0={x:e.touches[0].clientX,y:e.touches[0].clientY};}
+  else if(e.touches.length===2){var dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;pinchD=Math.sqrt(dx*dx+dy*dy);}
+},{passive:false});
+cv.addEventListener('touchmove',function(e){
+  e.preventDefault();
+  if(e.touches.length===1&&t0){
+    var dx=e.touches[0].clientX-t0.x,dy=e.touches[0].clientY-t0.y;
+    if(Math.sqrt(dx*dx+dy*dy)>4)tMoved=true;
+    pan.x+=dx;pan.y+=dy;t0={x:e.touches[0].clientX,y:e.touches[0].clientY};draw();
+  }else if(e.touches.length===2){
+    var dx2=e.touches[0].clientX-e.touches[1].clientX,dy2=e.touches[0].clientY-e.touches[1].clientY;
+    var d=Math.sqrt(dx2*dx2+dy2*dy2);
+    if(pinchD>0){
+      var f=d/pinchD,mx2=(e.touches[0].clientX+e.touches[1].clientX)/2,my2=(e.touches[0].clientY+e.touches[1].clientY)/2;
+      var r=cv.getBoundingClientRect();
+      var cx2=mx2-r.left,cy2=my2-r.top;
+      var wx2=(cx2-pan.x-cv.width/2)/zoom,wy2=(cy2-pan.y-cv.height/2)/zoom;
+      zoom=Math.min(15,Math.max(0.05,zoom*f));
+      pan.x=cx2-cv.width/2-wx2*zoom;pan.y=cy2-cv.height/2-wy2*zoom;draw();
+    }
+    pinchD=d;tMoved=true;
+  }
+},{passive:false});
+cv.addEventListener('touchend',function(e){if(!tMoved&&e.changedTouches.length===1)addTile();t0=null;pinchD=0;});
+
+/* keyboard */
+document.addEventListener('keydown',function(e){
+  if(e.target.tagName==='INPUT') return;
+  if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();undo();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='y'){e.preventDefault();redo();}
+  if(e.key==='Delete'||e.key==='Backspace') delLast();
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();addTile();}
+  if(e.key==='Escape'){path=[];draw();showHint();}
+  if(e.key==='g'||e.key==='G'){showGrid=!showGrid;document.getElementById('btnGrid').classList.toggle('act',showGrid);draw();}
+});
+
+/* buttons */
+document.getElementById('btnUndo').onclick   = undo;
+document.getElementById('btnRedo').onclick   = redo;
+document.getElementById('btnDel').onclick    = delLast;
+document.getElementById('btnDel2').onclick   = delLast;
+document.getElementById('btnClear').onclick  = clearAll;
+document.getElementById('btnClear2').onclick = clearAll;
+document.getElementById('btnGrid').onclick   = function(){showGrid=!showGrid;this.classList.toggle('act',showGrid);draw();};
+document.getElementById('btnZmIn').onclick   = function(){zoom=Math.min(15,zoom*1.2);document.getElementById('zmVal').textContent=Math.round(zoom*100)+'%';draw();};
+document.getElementById('btnZmOut').onclick  = function(){zoom=Math.max(0.05,zoom/1.2);document.getElementById('zmVal').textContent=Math.round(zoom*100)+'%';draw();};
+document.getElementById('btnZmReset').onclick= function(){zoom=0.6;pan={x:0,y:0};document.getElementById('zmVal').textContent='60%';draw();};
+document.getElementById('btnOrder').onclick  = openOrder;
+document.getElementById('mClose').onclick    = function(){document.getElementById('orderModal').classList.remove('open');};
+document.getElementById('mConfirm').onclick  = function(){document.getElementById('orderModal').classList.remove('open');toast('Заказ оформлен! Менеджер свяжется в течение часа.');};
+document.getElementById('orderModal').onclick= function(e){if(e.target===this)this.classList.remove('open');};
+
+function openOrder() {
+  var counts={};
+  path.forEach(function(t){counts[t.typeId]=(counts[t.typeId]||0)+1;});
+  var total=0, html='';
+  Object.entries(counts).forEach(function(e){
+    var d=getTile(e[0]),sum=d.price*e[1];total+=sum;
+    html+='<div class="mitem"><div><div class="mi-name">'+d.name+'</div><div class="mi-sub">'+d.sub+' · '+d.price.toLocaleString('ru')+' ₽/шт</div></div><div class="mi-right"><div class="mi-qty">'+e[1]+' шт</div><div class="mi-price">'+sum.toLocaleString('ru')+' ₽</div></div></div>';
+  });
+  document.getElementById('mItems').innerHTML=html||'<div class="empty">Добавьте плитки</div>';
+  document.getElementById('mTotal').textContent=total.toLocaleString('ru')+' ₽';
+  document.getElementById('orderModal').classList.add('open');
+}
+
+/* ── CURSOR (smooth via rAF) ── */
+var mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;
+var cdot=document.getElementById('curDot'),cring=document.getElementById('curRing'),cre=document.getElementById('curRingEl');
+document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;});
+function animCursor(){
+  rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
+  cdot.style.transform='translate('+mx+'px,'+my+'px)';
+  cring.style.transform='translate('+rx+'px,'+ry+'px)';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+document.querySelectorAll('a,button').forEach(function(el){
+  el.addEventListener('mouseenter',function(){cre.classList.add('big');});
+  el.addEventListener('mouseleave',function(){cre.classList.remove('big');});
+});
+
+/* ── INIT ── */
+buildCatalog();
+resize();
+showHint();
+</script>
+</body>
+</html>
